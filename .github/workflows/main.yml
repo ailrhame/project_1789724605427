@@ -26,12 +26,27 @@ jobs:
         with:
           flutter-version: '3.16.0'
           channel: 'stable'
+          cache: true
+
+      - name: Fix launcher icon
+        run: |
+          find android/app/src/main/res -name "ic_launcher.png" -delete 2>/dev/null || true
+          mkdir -p android/app/src/main/res/mipmap-hdpi
+          mkdir -p android/app/src/main/res/mipmap-mdpi
+          mkdir -p android/app/src/main/res/mipmap-xhdpi
+          mkdir -p android/app/src/main/res/mipmap-xxhdpi
+          mkdir -p android/app/src/main/res/mipmap-xxxhdpi
+          curl -sL "https://raw.githubusercontent.com/flutter/flutter/master/packages/flutter_tools/templates/app_shared/android.tmpl/app/src/main/res/mipmap-hdpi/ic_launcher.png" -o android/app/src/main/res/mipmap-hdpi/ic_launcher.png || true
+          curl -sL "https://raw.githubusercontent.com/flutter/flutter/master/packages/flutter_tools/templates/app_shared/android.tmpl/app/src/main/res/mipmap-mdpi/ic_launcher.png" -o android/app/src/main/res/mipmap-mdpi/ic_launcher.png || true
+          curl -sL "https://raw.githubusercontent.com/flutter/flutter/master/packages/flutter_tools/templates/app_shared/android.tmpl/app/src/main/res/mipmap-xhdpi/ic_launcher.png" -o android/app/src/main/res/mipmap-xhdpi/ic_launcher.png || true
+          curl -sL "https://raw.githubusercontent.com/flutter/flutter/master/packages/flutter_tools/templates/app_shared/android.tmpl/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" -o android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png || true
+          curl -sL "https://raw.githubusercontent.com/flutter/flutter/master/packages/flutter_tools/templates/app_shared/android.tmpl/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" -o android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png || true
 
       - name: Get dependencies
         run: flutter pub get
 
       - name: Build APK
-        run: flutter build apk --release
+        run: flutter build apk --release --no-tree-shake-icons
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
